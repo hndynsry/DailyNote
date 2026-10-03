@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#8b5cf6">
+  <title>DailyNote</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div>
+      <p id="greeting">Selamat pagi 👋</p>
+      <h1>DailyNote</h1>
+    </div>
+    <button class="icon-btn" onclick="openSettings()">⚙️</button>
+  </header>
+
+  <!-- CONTENT -->
+  <main>
+
+    <!-- BERANDA -->
+    <section id="home" class="page active">
+
+      <div class="welcome-card">
+        <div>
+          <p>Hari ini</p>
+          <h2 id="todayText"></h2>
+          <small>Jangan lupa mencatat harimu ✨</small>
+        </div>
+        <span class="big-icon">📖</span>
+      </div>
+
+      <div class="section-title">
+        <h2>Ringkasan Hari Ini</h2>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <span>📝</span>
+          <b id="noteCount">0</b>
+          <small>Catatan</small>
+        </div>
+
+        <div class="summary-card">
+          <span>✅</span>
+          <b id="taskCount">0</b>
+          <small>Tugas selesai</small>
+        </div>
+
+        <div class="summary-card">
+          <span>🔥</span>
+          <b id="streakCount">0</b>
+          <small>Streak</small>
+        </div>
+
+        <div class="summary-card">
+          <span id="homeMood">🙂</span>
+          <b>Mood</b>
+          <small>Hari ini</small>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <h2>Apa yang ingin kamu lakukan?</h2>
+      </div>
+
+      <div class="quick-actions">
+        <button onclick="showPage('notes')">
+          <span>📝</span>
+          Catatan
+        </button>
+
+        <button onclick="showPage('tasks')">
+          <span>✅</span>
+          To-Do
+        </button>
+
+        <button onclick="showPage('mood')">
+          <span>😊</span>
+          Mood
+        </button>
+
+        <button onclick="showPage('calendar')">
+          <span>📅</span>
+          Kalender
+        </button>
+      </div>
+
+      <div class="quote-card">
+        <span>💜</span>
+        <p id="dailyQuote">“Hari ini adalah halaman baru. Isi dengan cerita yang indah.”</p>
+      </div>
+
+    </section>
+
+
+    <!-- CATATAN -->
+    <section id="notes" class="page">
+
+      <div class="page-header">
+        <div>
+          <p>Diary</p>
+          <h2>Catatan Harian 📝</h2>
+        </div>
+
+        <button class="add-btn" onclick="openNoteModal()">＋</button>
+      </div>
+
+      <div id="notesList" class="notes-list"></div>
+
+      <div id="emptyNotes" class="empty-state">
+        <span>📖</span>
+        <h3>Belum ada catatan</h3>
+        <p>Tulis cerita tentang harimu hari ini.</p>
+        <button onclick="openNoteModal()">+ Buat Catatan</button>
+      </div>
+
+    </section>
+
+
+    <!-- TO DO -->
+    <section id="tasks" class="page">
+
+      <div class="page-header">
+        <div>
+          <p>Produktivitas</p>
+          <h2>To-Do List ✅</h2>
+        </div>
+
+        <button class="add-btn" onclick="openTaskModal()">＋</button>
+      </div>
+
+      <div class="progress-box">
+        <div class="progress-info">
+          <span>Progress hari ini</span>
+          <b id="progressText">0%</b>
+        </div>
+        <div class="progress-bar">
+          <div id="progressFill"></div>
+        </div>
+      </div>
+
+      <div id="taskList" class="task-list"></div>
+
+      <div id="emptyTasks" class="empty-state">
+        <span>✅</span>
+        <h3>Belum ada kegiatan</h3>
+        <p>Tambahkan kegiatan yang ingin kamu lakukan.</p>
+        <button onclick="openTaskModal()">+ Tambah Kegiatan</button>
+      </div>
+
+    </section>
+
+
+    <!-- MOOD -->
+    <section id="mood" class="page">
+
+      <div class="page-header">
+        <div>
+          <p>Perasaan</p>
+          <h2>Mood Hari Ini 😊</h2>
+        </div>
+      </div>
+
+      <div class="mood-card">
+        <h3>Bagaimana perasaanmu hari ini?</h3>
+
+        <div class="mood-options">
+          <button onclick="selectMood('😄','Sangat Bahagia')">😄<small>Bahagia</small></button>
+          <button onclick="selectMood('😊','Senang')">😊<small>Senang</small></button>
+          <button onclick="selectMood('😐','Biasa')">😐<small>Biasa</small></button>
+          <button onclick="selectMood('😔','Sedih')">😔<small>Sedih</small></button>
+          <button onclick="selectMood('😡','Marah')">😡<small>Marah</small></button>
+          <button onclick="selectMood('😴','Lelah')">😴<small>Lelah</small></button>
+        </div>
+
+        <div id="selectedMood" class="selected-mood">
+          Belum memilih mood
+        </div>
+
+        <textarea id="moodNote" placeholder="Ceritakan perasaanmu hari ini..."></textarea>
+
+        <button class="primary-btn" onclick="saveMood()">
+          Simpan Mood
+        </button>
+      </div>
+
+      <div class="section-title">
+        <h2>Riwayat Mood</h2>
+      </div>
+
+      <div id="moodHistory"></div>
+
+    </section>
+
+
+    <!-- KALENDER -->
+    <section id="calendar" class="page">
+
+      <div class="page-header">
+        <div>
+          <p>Catatan berdasarkan tanggal</p>
+          <h2>Kalender 📅</h2>
+        </div>
+      </div>
+
+      <div class="calendar-card">
+
+        <div class="calendar-header">
+          <button onclick="changeMonth(-1)">‹</button>
+          <h3 id="monthYear"></h3>
+          <button onclick="changeMonth(1)">›</button>
+        </div>
+
+        <div class="weekdays">
+          <span>Min</span>
+          <span>Sen</span>
+          <span>Sel</span>
+          <span>Rab</span>
+          <span>Kam</span>
+          <span>Jum</span>
+          <span>Sab</span>
+        </div>
+
+        <div id="calendarDays" class="calendar-days"></div>
+
+      </div>
+
+      <div id="selectedDateNotes"></div>
+
+    </section>
+
+
+    <!-- STATISTIK -->
+    <section id="stats" class="page">
+
+      <div class="page-header">
+        <div>
+          <p>Perkembanganmu</p>
+          <h2>Statistik 📊</h2>
+        </div>
+      </div>
+
+      <div class="stat-main">
+        <span>🔥</span>
+        <h2 id="statStreak">0 Hari</h2>
+        <p>DailyNote Streak</p>
+      </div>
+
+      <div class="stats-grid">
+
+        <div class="stat-card">
+          <span>📝</span>
+          <b id="statNotes">0</b>
+          <small>Total Catatan</small>
+        </div>
+
+        <div class="stat-card">
+          <span>✅</span>
+          <b id="statTasks">0</b>
+          <small>Tugas Selesai</small>
+        </div>
+
+        <div class="stat-card">
+          <span>😊</span>
+          <b id="statMoods">0</b>
+          <small>Riwayat Mood</small>
+        </div>
+
+        <div class="stat-card">
+          <span>📅</span>
+          <b id="statDays">0</b>
+          <small>Hari Menulis</small>
+        </div>
+
+      </div>
+
+      <div class="quote-card">
+        <span>🌷</span>
+        <p>Setiap catatan kecil adalah bagian dari perjalananmu.</p>
+      </div>
+
+    </section>
+
+
+    <!-- PROFIL -->
+    <section id="profile" class="page">
+
+      <div class="profile-card">
+        <div class="avatar">👤</div>
+        <h2 id="profileName">Pengguna DailyNote</h2>
+        <p>Selamat datang di DailyNote 💜</p>
+
+        <button onclick="editProfile()">✏️ Edit Nama</button>
+      </div>
+
+      <div class="profile-info">
+        <div>
+          <span>📝</span>
+          <p><b id="profileNotes">0</b><small>Catatan</small></p>
+        </div>
+
+        <div>
+          <span>🔥</span>
+          <p><b id="profileStreak">0</b><small>Streak</small></p>
+        </div>
+
+        <div>
+          <span>😊</span>
+          <p><b id="profileMood">0</b><small>Mood</small></p>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- PENGATURAN -->
+    <section id="settings" class="page">
+
+      <div class="page-header">
+        <div>
+          <p>Personalize</p>
+          <h2>Pengaturan ⚙️</h2>
+        </div>
+      </div>
+
+      <div class="settings-list">
+
+        <div class="setting-item">
+          <div>
+            <b>🌙 Mode Gelap</b>
+            <small>Gunakan tampilan gelap</small>
+          </div>
+
+          <label class="switch">
+            <input type="checkbox" id="darkMode" onchange="toggleDarkMode()">
+            <span></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <b>🔔 Notifikasi</b>
+            <small>Pengingat menulis catatan</small>
+          </div>
+
+          <label class="switch">
+            <input type="checkbox" id="notifications">
+            <span></span>
+          </label>
+        </div>
+
+        <button class="danger-btn" onclick="clearAllData()">
+          🗑️ Hapus Semua Data
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
+
+    <button class="nav-item active" data-page="home" onclick="showPage('home')">
+      <span>🏠</span>
+      <small>Beranda</small>
+    </button>
+
+    <button class="nav-item" data-page="notes" onclick="showPage('notes')">
+      <span>📝</span>
+      <small>Catatan</small>
+    </button>
+
+    <button class="nav-item" data-page="tasks" onclick="showPage('tasks')">
+      <span>✅</span>
+      <small>To-Do</small>
+    </button>
+
+    <button class="nav-item" data-page="calendar" onclick="showPage('calendar')">
+      <span>📅</span>
+      <small>Kalender</small>
+    </button>
+
+    <button class="nav-item" data-page="profile" onclick="showPage('profile')">
+      <span>👤</span>
+      <small>Profil</small>
+    </button>
+
+  </nav>
+
+</div>
+
+
+<!-- MODAL CATATAN -->
+<div id="noteModal" class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>📝 Catatan Baru</h2>
+      <button onclick="closeModal('noteModal')">×
